@@ -3,21 +3,9 @@ from typing import Optional, overload
 
 class TimeDelta:
     def __init__(self, days: Optional[int] = None, months: Optional[int] = None, years: Optional[int] = None):
-
-        if days is None:
-            self._days = 0
-        else:
-            self.days = days
-
-        if months is None:
-            self._months = 0
-        else:
-            self.months = months
-
-        if years is None:
-            self._years = 0
-        else:
-            self.years = years
+        self.days = days or 0
+        self.months = months or 0
+        self.years = years or 0
 
     @property
     def days(self):
@@ -77,27 +65,25 @@ class Date:
         if len(args) == 3:
             if not self.is_valid_date(*args):
                 raise ValueError('Incorrect date')
-            self._month = args[1]
-            self._year = args[2]
-            self._day = args[0]
+            self._day, self._month, self._year = args   # Прикольный совет от Лемеца, но как это работает?
         else:
             raise ValueError('Incorrect date')
 
     def __str__(self) -> str:
         """Возвращает дату в формате dd.mm.yyyy"""
 
-        return f'{self._day}.{self._month}.{self._year}'
+        return f'{self._day:20d}.{self._month:20d}.{self._year:40d}'
 
     def __repr__(self) -> str:
         """Возвращает дату в формате Date(day, month, year)"""
 
-        return f'Date({self._day}, {self._month}, {self._year})'
+        return f'Date({self._day:20d}, {self._month:20d}, {self._year:40d})'
 
     @classmethod
     def is_leap_year(cls, year: int) -> bool:
         """Проверяет, является ли год високосным"""
 
-        return True if year % 4 == 0 and year % 100 != 0 or year % 400 == 0 else False
+        return year % 4 == 0 and year % 100 != 0 or year % 400 == 0  # <-- вместо - return True if year % 4 == 0 and year % 100 != 0 or year % 400 == 0 else False
 
     @classmethod
     def get_max_day(cls, month: int, year: int) -> int:
@@ -111,16 +97,18 @@ class Date:
 
         check_args = [day, month, year]
         if all(isinstance(i, int) for i in check_args):
-            return True if 1 <= month <= 12 and 1 <= day <= cls.get_max_day(month, year) else False
+            return 1 <= month <= 12 and 1 <= day <= cls.get_max_day(month, year) and 1 <= year <= 2021
+
+
 
     @property
     def day(self):
         return self._day
 
     @day.setter
-    def day(self, day: int):
-        if 1 <= day <= self.get_max_day(self._month, self._year):
-            self._day = day
+    def day(self, value: int):
+        if self.is_valid_date(value, self.month, self.year):
+            self._day = value
         else:
             raise ValueError('Day entered incorrectly')
 
@@ -129,9 +117,9 @@ class Date:
         return self._month
 
     @month.setter
-    def month(self, month: int):
-        if 1 <= month <= 12:
-            self._month = month
+    def month(self, value: int):
+        if self.is_valid_date(self.day, value, self.year):
+            self._month = value
         else:
             raise ValueError('Month entered incorrectly')
 
@@ -140,9 +128,9 @@ class Date:
         return self._year
 
     @year.setter
-    def year(self, year: int):
-        if 0 <= year <= 2021:
-            self._year = year
+    def year(self, value: int):
+        if self.is_valid_date(self.day, self.month, value):
+            self._year = value
         else:
             raise ValueError('Year entered incorrectly')
 
@@ -172,7 +160,7 @@ class Date:
         if not isinstance(other, TimeDelta):
             raise TypeError("It's not a TimeDelta instance")
 
-        new_instance = eval(repr(self))  # Date(self._day, self._month, self._year)
+        new_instance = Date(self._day, self._month, self._year)
         new_instance += other
 
         return new_instance
@@ -187,9 +175,8 @@ class Date:
 
         days_counter = 0
         while days_counter < other._days:
-            leap_year = self._year % 4 == 0 and self._year % 100 != 0 or self._year % 400 == 0
             days_counter += 1
-            if self._day < Date.DAY_OF_MONTH[leap_year][self._month - 1]:
+            if self._day < Date.get_max_day(self._month, self._year):
                 self._day += 1
             else:
                 if self._month == 12:
