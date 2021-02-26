@@ -6,12 +6,13 @@ from date import Date, TimeDelta
     (None, 1, 1),
     (10, None, 10),
     (100, 100, None),
+    (1, 1, 1)
 ])
 def test_create_time_delta(days, months, years):
     ex = TimeDelta(days, months, years)
-    assert ex.days == 0 if days is None else days
-    assert ex.months == 0 if months is None else months
-    assert ex.years == 0 if years is None else years
+    assert ex.days == (days or 0)
+    assert ex.months == (months or 0)
+    assert ex.years == (years or 0)
 
 
 @pytest.mark.parametrize("days, months, years", [
