@@ -65,7 +65,7 @@ class Date:
         if len(args) == 3:
             if not self.is_valid_date(*args):
                 raise ValueError('Incorrect date')
-            self._day, self._month, self._year = args   # Прикольный совет от Лемеца, но как это работает?
+            self._day, self._month, self._year = args
         else:
             raise ValueError('Incorrect date')
 
@@ -83,7 +83,7 @@ class Date:
     def is_leap_year(cls, year: int) -> bool:
         """Проверяет, является ли год високосным"""
 
-        return year % 4 == 0 and year % 100 != 0 or year % 400 == 0  # <-- вместо - return True if year % 4 == 0 and year % 100 != 0 or year % 400 == 0 else False
+        return year % 4 == 0 and year % 100 != 0 or year % 400 == 0
 
     @classmethod
     def get_max_day(cls, month: int, year: int) -> int:
@@ -98,8 +98,6 @@ class Date:
         check_args = [day, month, year]
         if all(isinstance(i, int) for i in check_args):
             return 1 <= month <= 12 and 1 <= day <= cls.get_max_day(month, year) and 1 <= year <= 2021
-
-
 
     @property
     def day(self):
