@@ -4,4 +4,4 @@ python: "3.9"
 install:
   - pip install .[tests]
 script:
-  - PYTHONPATH=. pytest --cov-report term-missing --cov date tests
+  - PYTHONPATH=. pytest --cov-report term-missing --cov date testing_date.py
