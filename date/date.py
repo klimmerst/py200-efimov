@@ -135,14 +135,19 @@ class Date:
     def all_days_in_date(self):
         """Возвращает количество дней от 1 года"""
 
-        days_of_years = 365 * (self._year - 1)
-        leap_days = self._year // 4
-        days_of_months = 0
-        for i in range(self._month - 1):
-            days_of_months += Date.DAY_OF_MONTH[0][i]
-        all_days = self._day + days_of_months + days_of_years + leap_days
+        days = 0
+        for i in range(1, self._year):
+            if self.is_leap_year(i):
+                days += 366
+            else:
+                days += 365
 
-        return all_days
+        for i in range(0, self._month - 1):
+            days += Date.DAY_OF_MONTH[0][i]
+
+        days += self.day
+
+        return days
 
     def __sub__(self, other: "Date") -> int:
         """Разница между датой self и other (-)"""
@@ -195,3 +200,5 @@ class Date:
                 self._month += 1
 
         return self
+
+r = Date(1,1,1)
