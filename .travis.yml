@@ -1,0 +1,7 @@
+dist: xenial
+language: python
+python: "3.9"
+install:
+  - pip install .[test]
+script:
+  - PYTHONPATH=. pytest --cov-report term-missing --cov date test
