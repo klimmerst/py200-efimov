@@ -200,5 +200,3 @@ class Date:
                 self._month += 1
 
         return self
-
-r = Date(1,1,1)
